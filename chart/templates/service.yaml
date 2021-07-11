@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.appName }}-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: {{ .Values.appPort }}
+  selector:
+    app: {{ .Values.appName }}-svc

@@ -1,0 +1,5 @@
+appName: pangaea-nodejs-${DEPLOY_SUFFIX}
+appPort: 3000
+gitlabImageRegistryToken: gitlab-pangaeanodejs-auth
+image: ${DOCKER_IMAGE_TAG}
+namespace: ${DEPLOY_SUFFIX}
