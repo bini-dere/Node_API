@@ -3,3 +3,4 @@ appPort: 3000
 gitlabImageRegistryToken: gitlab-pangaeanodejs-auth
 image: ${DOCKER_IMAGE_TAG}
 namespace: ${DEPLOY_SUFFIX}
+DBurl: https://dburl
