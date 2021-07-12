@@ -2,6 +2,7 @@
 
 - Integration of github with gitlab requires 4-5 simple steps. Well documented here https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/github_integration.html.
 - After integration is done and this repo is mirrored to the new one on Gitlab, use the .gitlab-ci.yml to define the flow of the pipeline.
+- gitlab project(mirrored to this github repo) where the CI/CD is set up is https://gitlab.com/binid/node_api (please request access if needed)
 
 # Add Kubernetes cluster to the Gitlab
 
