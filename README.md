@@ -1,18 +1,19 @@
 # Integration with Gitlab CI/CD
+
 - Integration of github with gitlab requires 4-5 simple steps. Well documented here https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/github_integration.html.
 - After integration is done and this repo is mirrored to the new one on Gitlab, use the .gitlab-ci.yml to define the flow of the pipeline.
 
 # Add Kubernetes cluster to the Gitlab
+
 ## Kubernetes side
 - Get API URL & CA certificate. Create Service Token to authenticate with the cluster.
-API URL:
-kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
-
-CA certificate(you can use the default):
-kubectl get secret <default-token-xxxxx> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-
-Service Token:
-First create a gitlab service account with cluster-admin role. 
+- API URL:
+`kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'`
+- CA certificate(you can use the default):
+`kubectl get secret <default-token-xxxxx> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode`
+- Service Token:
+First create a gitlab service account with cluster-admin role.
+```
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -31,23 +32,24 @@ subjects:
   - kind: ServiceAccount
     name: gitlab
     namespace: kube-system
-
+```
 Then, retrieve the Token for the gitlab service account by running this command and copy the token,
-kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab | awk '{print $1}')
+`kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab | awk '{print $1}')`
 
 
 ## Gitlab side
-- On the new Gitlab repo(mirrored from the github repo), go to 'Infrastructure' --> 'kubernetes clusters' to add a project level kubernetes cluster. Add Cluster's name, API URL, CA certificate and service token.
+- On the new Gitlab repo(mirrored from the github repo), go to `Infrastructure` --> `kubernetes clusters` to add a project level kubernetes cluster. Add Cluster's name, API URL, CA certificate and service token.
 
 # Integration with Gitlab image registry
+
 ## Gitlab side
 - Deploy token is generated to allow access to packages, your repository, and registry images
 - Pull-secret is generated using the username and token from the deploy token. Generated base64 string value is:
-eyJhdXRocyI6eyJyZWdpc3RyeS5naXRsYWIuY29tIjp7ImF1dGgiOiJaMmwwYkdGaUsyUmxjR3h2ZVMxMGIydGxiaTAxTURrMU5EZzZTelJtUm5rMmVWTnlSWGhIUm1aMFYzcGpMVXc9In19fQ==
+`eyJhdXRocyI6eyJyZWdpc3RyeS5naXRsYWIuY29tIjp7ImF1dGgiOiJaMmwwYkdGaUsyUmxjR3h2ZVMxMGIydGxiaTAxTURrMU5EZzZTelJtUm5rMmVWTnlSWGhIUm1aMFYzcGpMVXc9In19fQ==`
 
 ## Kubernetes side
 - Use the above base64 string to create a secret of type 'kubernetes.io/dockerconfigjson' which will be used to pull images from the gitlab image registry. Make sure the imagePullSecrets in deployment yaml is identical to this secret name value. Run this yaml file to create the secret,
-
+```
 kind: Secret
 apiVersion: v1
 metadata:
@@ -55,6 +57,7 @@ metadata:
 type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5naXRsYWIuY29tIjp7ImF1dGgiOiJaMmwwYkdGaUsyUmxjR3h2ZVMxMGIydGxiaTAxTURrMU5EZzZTelJtUm5rMmVWTnlSWGhIUm1aMFYzcGpMVXc9In19fQ==
+```
 
 # Dockerfile & DB endpoint
 
@@ -62,7 +65,7 @@ data:
 - PORT is defined in the Dockerfile.
 - DATABASE_URL is passed as an environment variable in the deployment yaml file so that we have the flexibility to change the DATABASE_URL in Kubernetes secrets(no need of rebuilding the image, just requires rollout restarting the nodejs pod after editing DATABASE_URL secret value).
 - This file creates the secret in staging & production namespaces;
-
+```
 apiVersion: v1
 kind: Secret
 metadata:
@@ -78,6 +81,7 @@ metadata:
   namespace: production
 stringData:
   DATABASE_URL: https://prod.dburl
+```
 
 # Workflow/CI/CD
 
