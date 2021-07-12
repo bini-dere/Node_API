@@ -39,7 +39,7 @@ Then, retrieve the Token for the gitlab service account by running this command 
 
 
 ## Gitlab side
-- On the new Gitlab repo(mirrored from the github repo), go to `Infrastructure` --> `kubernetes clusters` to add a project level kubernetes cluster. Add Cluster's name, API URL, CA certificate and service token.
+- On the new Gitlab repo(mirrored from the github repo), go to `Infrastructure` --> `kubernetes clusters` to add a project level kubernetes cluster. Add Cluster's `name`, `API URL`, `CA certificate` and `service token`.
 
 # Integration with Gitlab image registry
 
