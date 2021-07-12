@@ -90,7 +90,7 @@ stringData:
 I created the staging branch out of master. 
 - Developers will branch off from staging branch and create new branches to make modification to the code. Once done, when merged to staging, pipeline will be triggered and docker image will be build & deployment to staging namespace/environment will take place(it is automatic, no need of manual approval as it is a staging environment).
 - To deploy to production environment/namespace, staging branch needs to be merged to master branch. This will trigger the pipeline, docker image will be build & deployment to production namespace will follow(this has a manual approval stage just before deployment as this is a production environment).
-- For tagging images, I used ${CI_COMMIT_REF_SLUG} among others as it contains git branch name.
+- For tagging images, I used `${CI_COMMIT_REF_SLUG}` among others as it contains git branch name.
 
 
 # Apologies
